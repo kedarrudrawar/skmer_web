@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # self made
-    'reference'
+    'reference',
+    'queries'
 ]
 
 MIDDLEWARE = [

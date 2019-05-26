@@ -16,9 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from reference.views import home_view, detail_view
+from queries.views import query_create_view
+
 
 urlpatterns = [
     path('', home_view, name='home'),
+    path('analyze/', query_create_view, name='input'),
     path('detail/', detail_view, name='detail'),
     path('admin/', admin.site.urls),
 ]
