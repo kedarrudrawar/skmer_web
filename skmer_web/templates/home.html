@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="/analyze/">Analyze Query</a>
+
+<ul>
+    {% for elem in my_list %}
+        <li>{{ elem }}</li>
+    {% endfor %}
+</ul>
+
+<p> This is a template. </p>
+{% endblock %}
+

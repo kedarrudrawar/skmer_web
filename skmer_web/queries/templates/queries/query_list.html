@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Queries</h2>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Filename</th>
+            <th>File</th>
+            <th>Download link</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for query in queries %}
+            <tr>
+                <td> {{ query.fileName }}</td>
+                <td> {{ query.queryFile }}</td>
+                <td>
+                    {{ query.queryFile.url }}
+                    <a href="{{ query.queryFile.url }}" target="_blank">
+                        Download File
+                    </a>
+                </td>
+                <!--<td> {{ lengths.forloop.counter0 }}</td>-->
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+{% endblock %}
