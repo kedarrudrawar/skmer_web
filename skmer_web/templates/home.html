@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load staticfiles %}
 
-<a href="/analyze/">Analyze Query</a>
-
+<a href=" {% url 'queries:input' %}">Input Query</a><br>
+<img src="{% static 'images/background.jpg' %}" alt="My image"/>
 <ul>
     {% for elem in my_list %}
         <li>{{ elem }}</li>

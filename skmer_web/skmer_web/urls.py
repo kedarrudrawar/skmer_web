@@ -18,16 +18,18 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 from reference.views import home_view, detail_view
-from queries.views import query_create_view, upload_file, upload_queryfile, query_list
+# from queries.views import query_create_view, upload_file
+# from queries.views import upload_queryfile, query_list
 
 
 urlpatterns = [
     path('', home_view, name='home'),
-    path('analyze/', upload_queryfile, name='upload'),
-    path('queries/', query_list, name='query_list'),
-    path('detail/', detail_view, name='detail'),
+    path('query/', include('queries.urls')),
+    # path('queries/', query_list, name='query_list'),
+    # path('detail/', detail_view, name='detail'),
     path('admin/', admin.site.urls),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
