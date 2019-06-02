@@ -1,16 +1,9 @@
 {% extends 'base.html' %}
 
+
 {% block content %}
 {% load staticfiles %}
 
-<a href=" {% url 'queries:input' %}">Input Query</a><br>
-<img src="{% static 'images/background.jpg' %}" alt="My image"/>
-<ul>
-    {% for elem in my_list %}
-        <li>{{ elem }}</li>
-    {% endfor %}
-</ul>
-
-<p> This is a template. </p>
+<h2><a> This is the home page. </a></h2>
 {% endblock %}
 

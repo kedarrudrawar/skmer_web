@@ -1,5 +1,7 @@
 <!doctype html>
 <html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
 <head>
   <title> Base template </title>
 </head>
@@ -9,6 +11,7 @@
   {% endblock %}
 
   {% block content %}
+  <h1><a>BASE TEMPLATE </a></h1>
   replacement text
   {% endblock %}
   </body>

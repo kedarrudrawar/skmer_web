@@ -26,7 +26,6 @@ def analyze_file(request, query_id):
 
     else:
         print('found query file')
-        # return redirect('queries:query_list')
         context = {
             'query': query
         }

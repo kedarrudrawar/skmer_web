@@ -25,9 +25,7 @@ from reference.views import home_view, detail_view
 urlpatterns = [
     path('', home_view, name='home'),
     path('query/', include('queries.urls')),
-    # path('queries/', query_list, name='query_list'),
-    # path('detail/', detail_view, name='detail'),
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
 ]
 
 if settings.DEBUG:
