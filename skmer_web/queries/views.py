@@ -4,14 +4,16 @@ from django.conf import settings
 from django.views import generic
 from urllib.parse import urlencode
 
+import os,sys,inspect
+sys.path.append('/Users/KedarRudrawar/Desktop/Spring Quarter 2019/CSE-182/skmer_web/skmer_web/')
+
 from .forms import QueryForm, RawQueryForm
 from .models import Query
-from ..scripts.skmer_functions import parse_queryout, query
+from scripts.skmer_functions import parse_queryout, query
 
-import os
-
-
-REF_DIR_PATH = '/Users/KedarRudrawar/Desktop/Spring Quarter 2019/CSE-182/skmer_web/skmer_web/static/ref_dir/'
+BASE_DIR = '/Users/KedarRudrawar/Desktop/Spring Quarter 2019/CSE-182/skmer_web/skmer_web/'
+STATIC_DIR = BASE_DIR + 'static/'
+REF_DIR_PATH = STATIC_DIR + 'ref_dir/'
 
 
 
@@ -25,16 +27,17 @@ class DetailView(generic.DetailView):
 def analyze_file(request, query_id):
     query_obj = Query.objects.get(pk=query_id)
     try:
-        queryFile = query_obj.queryFile
+        query_file = query_obj.queryFile
     except KeyError:
         return render(request, 'queries/blank.html')
 
     else:
-        query_file = "Skmer_old/data/qry.fastq"
-        library_dir = "Skmer_old/data/testlib"
-        output_prefix = "Skmer_old/data/PYTHONTEST11"
+        library_dir = STATIC_DIR + 'testlib/'
+        output_prefix = BASE_DIR + 'media/skmer_output/'
         out = query(query_file, library_dir, output_prefix, add_query_to_ref=False)
         list_of_hit_distance_pairs = parse_queryout(out)
+
+        print(list_of_hit_distance_pairs)
 
         context = {
             'query': query
