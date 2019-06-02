@@ -21,6 +21,11 @@
                         Download File
                     </a>
                 </td>
+                <td>
+                    <a href="{% url 'queries:analyze' query_id=query.id %}" target="_blank">
+                        Analyze
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
