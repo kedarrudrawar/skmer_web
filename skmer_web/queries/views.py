@@ -6,8 +6,13 @@ from urllib.parse import urlencode
 
 from .forms import QueryForm, RawQueryForm
 from .models import Query
+from ..scripts.skmer_functions import parse_queryout, query
 
 import os
+
+
+REF_DIR_PATH = '/Users/KedarRudrawar/Desktop/Spring Quarter 2019/CSE-182/skmer_web/skmer_web/static/ref_dir/'
+
 
 
 class DetailView(generic.DetailView):
@@ -18,14 +23,19 @@ class DetailView(generic.DetailView):
 
 
 def analyze_file(request, query_id):
-    query = Query.objects.get(pk=query_id)
+    query_obj = Query.objects.get(pk=query_id)
     try:
-        queryFile = query.queryFile
+        queryFile = query_obj.queryFile
     except KeyError:
         return render(request, 'queries/blank.html')
 
     else:
-        print('found query file')
+        query_file = "Skmer_old/data/qry.fastq"
+        library_dir = "Skmer_old/data/testlib"
+        output_prefix = "Skmer_old/data/PYTHONTEST11"
+        out = query(query_file, library_dir, output_prefix, add_query_to_ref=False)
+        list_of_hit_distance_pairs = parse_queryout(out)
+
         context = {
             'query': query
         }
