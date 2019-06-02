@@ -1,5 +1,5 @@
 import os
-
+import subprocess
 
 ## 
 # Takes in the path to the library directory
@@ -18,7 +18,6 @@ def generate_distances(library_dir):
     
     return output_dist_mat+".txt"
 
-
 ## 
 # Returns parsed list of tuples [(hit, distance), ...]
 #  Inputs: 
@@ -27,17 +26,19 @@ def generate_distances(library_dir):
 #  output_prefix - the path to + prefix of the desired output file
 # 
 def query(query_file, library_dir, output_prefix, add_query_to_ref=False):
-    
     output_suffix = query_file.split("/")[-1]
     output_suffix = output_suffix.split(".")[0]
     
-    output_file = output_prefix +"-"+ output_suffix + ".txt"
+    output_file = output_prefix + '-' + output_suffix.lower() + ".txt"
     
     if add_query_to_ref:
-        os.popen("skmer query "+ query_file + " " + library_dir + " -a -o " + output_prefix)
+        command = "skmer query "+ query_file + " " + library_dir + " -a -o " + output_prefix
+        command = command.split(' ')
     else:
-        os.popen("skmer query "+ query_file + " " + library_dir + " -o " + output_prefix)
-
+        command = "skmer query "+ query_file + " " + library_dir + " -o " + output_prefix
+        command = command.split(' ')
+    print(command)
+    subprocess.call(command)
     return output_file
 
 # outputs parsed list of tuples [(hit, distance), ...]
