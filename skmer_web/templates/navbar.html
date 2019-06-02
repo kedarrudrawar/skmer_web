@@ -1,7 +1,8 @@
 <nav>
   <ul class="header_ul">
     <li class='header_li'><a class='header_a' href="{% url 'home' %}">Home</a></li>
-    <li class='header_li'><a class='header_a' href="{% url 'queries:input' %}"> Analyze Query</a></li>
+    <li class='header_li'><a class='header_a' href="{% url 'queries:input_single' %}"> Analyze Query</a></li>
+    <li class='header_li'><a class='header_a' href="{% url 'queries:input_multiple' %}"> Analyze Queries</a></li>
     <li class='header_li'><a class='header_a' href="{% url 'queries:query_list' %}">Queries</a></li>
   </ul>
 </nav>
