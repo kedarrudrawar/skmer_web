@@ -6,7 +6,7 @@ import os
 
 from .forms import QueryForm, MultipleQueryForm, QueryCollectionForm
 from .models import Query, Queries
-from scripts.skmer_functions import parse_queryout, query
+from scripts.skmer_functions import *
 
 STATIC_DIR = os.path.join(settings.BASE_DIR, 'static')
 REF_DIR_PATH = os.path.join(STATIC_DIR, 'ref_dir')
@@ -96,6 +96,7 @@ def analyze_multiple(request, queries_id):
     context = {
         'files': files
     }
+    
     return render(request, 'queries/multiplequery_analysis.html', context)
 
 
