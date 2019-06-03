@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2> This is the multiple query analysis file. </h2>
+    {% for file in files %}
+        {{ file.name }}<br>
+    {% endfor %}
+{% endblock %}

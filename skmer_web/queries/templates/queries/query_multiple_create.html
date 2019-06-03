@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ name_form.as_p }}
+    {{ query_form.as_p }}
+     <button type="submit">Analyze</button>
+
+    <!--<input type="file" name="queries" multiple/>-->
+    <!--<input type="submit" value="Upload" />-->
+</form>
+{% endblock %}
