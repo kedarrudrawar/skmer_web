@@ -1,17 +1,13 @@
-from django.shortcuts import render, redirect, reverse
-from django.core.files.storage import FileSystemStorage
+from django.shortcuts import render, redirect, reverse, HttpResponseRedirect
 from django.conf import settings
-from django.views import generic
 from urllib.parse import urlencode
 
 import os,sys,inspect
-# sys.path.append('/Users/KedarRudrawar/Desktop/Spring_Quarter_2019/CSE-182/skmer_web/skmer_web/')
 sys.path.append(settings.BASE_DIR)
 
-from .forms import QueryForm, RawQueryForm
-from .models import Query
+from .forms import QueryForm, MultipleQueryForm, QueryCollectionForm
+from .models import Query, Queries
 from scripts.skmer_functions import parse_queryout, query
-import time
 
 STATIC_DIR = os.path.join(settings.BASE_DIR, 'static')
 REF_DIR_PATH = os.path.join(STATIC_DIR, 'ref_dir')
@@ -37,17 +33,27 @@ def analyze_file(request, query_id):
             'output': list_of_hit_distance_pairs
         }
 
-        return render(request, 'queries/analysis.html', context)
+        return render(request, 'queries/singlequery_analysis.html', context)
+
+
+def analyze_multiple(request, queries_id):
+    queries_obj = Queries.objects.get(pk=queries_id)
+    queries = queries_obj.query_set.all()
+    files = [query.queryFile for query in queries]
+    context = {
+        'files': files
+    }
+    return render(request, 'queries/multiplequery_analysis.html', context)
+
 
 
 def query_list(request):
     queries = Query.objects.all()
     lengths = [q.queryFile.size for q in queries]
     print(queries)
-    print(lengths)
     context = {
         'queries': queries,
-        'sizes': lengths
+        'empty': len(queries) == 0
     }
 
     return render(request, 'queries/query_list.html', context)
@@ -75,22 +81,33 @@ def upload_queryfile(request):
 
 def upload_queryfile_multiple(request):
     if request.method == 'POST':
-        form = QueryForm(request.POST, request.FILES)
-        if form.is_valid():
-            q = form.save()
-            query_string = urlencode({'query_id': q.id})
+        name_form = QueryCollectionForm(request.POST)
+        query_form = MultipleQueryForm(request.POST, request.FILES)
 
-            base_url = reverse('queries:query_list')
+        files = request.FILES.getlist('queryFile')
+
+        if name_form.is_valid() and query_form.is_valid():
+            query_collection = name_form.save()
+            for file in files:
+                print(file)
+                query_collection.query_set.create(queryFile=file)
+
+            print(query_collection.query_set.all())
+            query_string = urlencode({'queries_id': query_collection.id})
+
+            base_url = reverse('queries:input_multiple')
             url = '%s%s' % (base_url, query_string)
             return redirect(url)
     else:
-        form = QueryForm()
+        name_form = QueryCollectionForm()
+        query_form = MultipleQueryForm()
 
     context = {
-        'form': form
+        'name_form': name_form,
+        'query_form': query_form,
     }
 
-    return render(request, 'queries/query_create.html', context)
+    return render(request, 'queries/query_multiple_create.html', context)
 
 
 

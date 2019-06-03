@@ -1,34 +1,40 @@
 {% extends 'base.html' %}
+
 {% block content %}
-    <h2>Queries</h2>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Filename</th>
-            <th>File</th>
-            <th>Download link</th>
-        </tr>
-        </thead>
-        <tbody>
-            {% for query in queries %}
+    {% if empty %}
+        <h2>There are no queries.</h2>
+
+    {% else %}
+        <h2>Queries</h2>
+        <table class="table">
+            <thead>
             <tr>
-                <td> {{ query.fileName }}</td>
-                <td> {{ query.queryFile }}</td>
-
-                <td>
-                    <a href="{{ query.queryFile.url }}" target="_blank">
-                        Download File
-                    </a>
-                </td>
-                <td>
-                    <a href="{% url 'queries:analyze' query_id=query.id %}" target="_blank">
-                        Analyze
-                    </a>
-                </td>
+                <th>Filename</th>
+                <th>File</th>
+                <th>Download link</th>
             </tr>
-            {% endfor %}
-        </tbody>
+            </thead>
+            <tbody>
+                {% for query in queries %}
+                <tr>
+                    <td> {{ query.fileName }}</td>
+                    <td> {{ query.queryFile }}</td>
 
-    </table>
+                    <td>
+                        <a href="{{ query.queryFile.url }}" target="_blank">
+                            Download File
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'queries:analyze' query_id=query.id %}" target="_blank">
+                            Analyze
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
 {% endblock %}
