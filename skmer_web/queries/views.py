@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.conf import settings
 from urllib.parse import urlencode
 
-import os,sys
-sys.path.append(settings.BASE_DIR)
+import os
 
 from .forms import QueryForm, MultipleQueryForm, QueryCollectionForm
 from .models import Query, Queries
