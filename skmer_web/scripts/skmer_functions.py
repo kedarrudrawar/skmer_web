@@ -1,9 +1,12 @@
 import os
+import shutil
 import subprocess
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import scipy.spatial as sp, scipy.cluster.hierarchy as hc
+
+
 
 ############################ QUERYING AND PARSING #############################
 
@@ -16,7 +19,7 @@ import scipy.spatial as sp, scipy.cluster.hierarchy as hc
 # 
 def query(query_file, library_dir, output_prefix):
     
-    command = "skmer query --debug"+ query_file + " " + library_dir + " -o " + output_prefix
+    command = "skmer query "+ query_file + " " + library_dir + " -o " + output_prefix
     command = command.split(' ')
     print(command)
     subprocess.call(command)
@@ -34,7 +37,7 @@ def query(query_file, library_dir, output_prefix):
 # outputs parsed list of tuples [(hit, distance), ...] 
 # AND DELETES THE FILE AT dist_file when clean=True
 #
-def parse_distout(dist_file, clean=False):
+def parse_distout(dist_file, n_results=5, clean=False):
     
     distances = []
     with open(dist_file, 'r') as f:
@@ -43,12 +46,10 @@ def parse_distout(dist_file, clean=False):
             splits = line.split()
             distances.append((splits[0], splits[1]))
             
-    if os.path.exists(dist_file):
+    if clean and os.path.exists(dist_file):
         os.remove(dist_file)
-    else:
-        print("The file does not exist")
         
-    return distances
+    return distances[:n_results]
 
 ##
 # Takes as input a filepath "dist_file"
@@ -78,8 +79,6 @@ def parse_statsout(stats_folder, n_decimals=5, clean=False):
             shutil.rmtree(stats_folder)
         except OSError as e:
             print ("Error: %s - %s." % (e.filename, e.strerror))
-    else:
-        print("The file does not exist")
         
     return stats
 
@@ -145,6 +144,8 @@ def plot_repeat_profile_bar(stat_dict, output_fig, logscale=False):
     ax.set_title("K-mer Repeat Ratios")
     plt.savefig(output_fig)
     
+    return(output_fig)
+    
 
 def plot_repeat_profile_donut(stat_dict, output_fig):    
     names=["Unique", "2", "3", "4", "5+"]
@@ -155,9 +156,10 @@ def plot_repeat_profile_donut(stat_dict, output_fig):
     plt.pie(size, labels=names)
     p=plt.gcf()
     p.gca().add_artist(my_circle)
-    ax.set_title("K-mer Repeat Ratios")
+    #ax.set_title("K-mer Repeat Ratios")
     plt.savefig(output_fig)
-
+    
+    return(output_fig)
 
 ##
 # Returns a dataframe of the distance matrix, saves a figure to "output_fig"
@@ -185,6 +187,5 @@ def plot_distance_heatmap(dm_path, output_fig, names_to_include=None):
 
     linkage = hc.linkage(sp.distance.squareform(dm_df), method='average')
     sns.clustermap(dm_df, row_linkage=linkage, col_linkage=linkage)
-    ax.set_title("Heatmap and Dendrogram of Pairwise Distances")
     plt.savefig(output_fig)
     return dm_df

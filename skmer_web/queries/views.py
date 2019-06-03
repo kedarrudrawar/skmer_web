@@ -7,6 +7,7 @@ import os
 from .forms import QueryForm, MultipleQueryForm, QueryCollectionForm
 from .models import Query, Queries
 from scripts.skmer_functions import *
+import zipfile
 
 STATIC_DIR = os.path.join(settings.BASE_DIR, 'static')
 REF_DIR_PATH = os.path.join(STATIC_DIR, 'ref_dir')
@@ -58,7 +59,7 @@ def upload_queryfile_multiple(request):
 
     context = {
         'name_form': name_form,
-        'query_form': query_form,
+        'query_form': query_form
     }
 
     return render(request, 'queries/query_multiple_create.html', context)
@@ -74,16 +75,41 @@ def analyze_file(request, query_id):
         return render(request, 'queries/blank.html')
 
     else:
-        library_dir = os.path.join(STATIC_DIR, 'testlib')
+        ########Define input/output paths
+        library_dir = os.path.join(STATIC_DIR, 'insect_test_lib') ## Change this for final runs
         output_prefix = os.path.join(settings.BASE_DIR, 'media/skmer_output/output')
-        out = query(query_file, library_dir, output_prefix, add_query_to_ref=False)
-        list_of_hit_distance_pairs = parse_queryout(out)
-
+        
+        # Generate query results
+        dist_file, stats_folder = query(query_file, library_dir, output_prefix)
+        
+        # Parse the query results into python objects
+        # Set clean=True to remove intermediate files
+        # Specify number of results to display (n_results=1 gives top hit only)
+        list_of_hit_distance_pairs = parse_distout(dist_file, n_results=5,
+                                                   clean=True)
         print(list_of_hit_distance_pairs)
-
+        
+        # Parse the statistics folder
+        # Can specify # decimal places to display, and whether to clean files
+        stats_dictionary = parse_statsout(stats_folder, n_decimals=5, 
+                                          clean=True)
+        
+        ######## Define filepath to where images are saved
+        media_dir = settings.MEDIA_ROOT
+        
+        # Generate figures for this query
+        barplot_fp = plot_repeat_profile_bar(stats_dictionary, 
+                                             media_dir+stats_folder, 
+                                             logscale=False)
+        donutplot_fp = plot_repeat_profile_donut(stats_dictionary, media_dir+stats_folder)
+        
         context = {
             'query': query_obj,
-            'output': list_of_hit_distance_pairs
+            'output': list_of_hit_distance_pairs,
+            'statistics': stats_dictionary,
+            'barplot_fp': barplot_fp,
+            'donutplot_fp': donutplot_fp,
+            
         }
 
         return render(request, 'queries/singlequery_analysis.html', context)
@@ -93,10 +119,34 @@ def analyze_multiple(request, queries_id):
     queries_obj = Queries.objects.get(pk=queries_id)
     queries = queries_obj.query_set.all()
     files = [query.queryFile for query in queries]
-    context = {
-        'files': files
-    }
     
+    # Create the new library from skims
+    media_dir = settings.MEDIA_ROOT
+    library_dir = os.path.join(media_dir, queries_id)
+    os.mkdir(library_dir)
+    print("Creating library: ", library_dir)
+    
+    for file in files:
+        filepath = file.path
+        # Unzip this file into a folder, and add folder to a reference 
+        # library
+        print(filepath)
+        with zipfile.ZipFile(filepath,"r") as zip_ref:
+            zip_ref.extractall(library_dir)
+    
+    # Generate the distance matrix from library
+    dm_path = generate_distances(library_dir)
+    
+    output_fig = os.path.join(media_dir, queries_id+"_distance_heatmap")
+    # Keep names_to_include as None to display all species
+    distmat_dataframe = plot_distance_heatmap(dm_path, output_fig,
+                                              names_to_include=None)
+    
+    context = {
+        'files': files,
+        'distance_heatmap': output_fig,
+        'distmat_dataframe': distmat_dataframe
+    }
     return render(request, 'queries/multiplequery_analysis.html', context)
 
 
