@@ -31,13 +31,13 @@ def get_common_names(file_name):
                     if record[0].get('OtherNames').get('GenbankCommonName'):
                         common_name = record[0].get('OtherNames').get('GenbankCommonName')
                         sci_to_common_dict[sci_name] = common_name
-                        if (isinstance(common_name, list)):
+                        if isinstance(common_name, list):
                             common_name = (common_name[0])
                         print(common_name)
                     elif record[0].get('OtherNames').get('CommonName'):
                         common_name = record[0].get('OtherNames').get('CommonName')
                         sci_to_common_dict[sci_name] = common_name
-                        if (isinstance(common_name, list)):
+                        if isinstance(common_name, list):
                             common_name = (common_name[0])
                         print(common_name)
                     else:
