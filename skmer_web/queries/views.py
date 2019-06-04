@@ -3,6 +3,7 @@ from django.conf import settings
 from urllib.parse import urlencode
 from django.http import HttpResponse
 from django.template import loader
+from shutil import copyfile
 
 import os
 
@@ -63,7 +64,7 @@ def upload_queryfile_multiple(request):
         'name_form': name_form,
         'query_form': query_form
     }
-
+    print('::::::RENDERING for upload_queryfile_multiple:::::')
     return render(request, 'queries/query_multiple_create.html', context)
 
 
@@ -108,9 +109,6 @@ def analyze_file(request, query_id):
                                              folder, 
                                              logscale=False)
         barplot_fp = os.path.basename(barplot_fp)
-#         svg = plot_repeat_profile_bar(stats_dictionary, 
-#                                              media_dir+stats_folder, 
-#                                              logscale=False)
 #         donutplot_fp = plot_repeat_profile_donut(stats_dictionary, media_dir+stats_folder)
 #         donutplot_fp = os.path.basename(donutplot_fp)
         
@@ -121,35 +119,51 @@ def analyze_file(request, query_id):
             'output': list_of_hit_distance_pairs,
             'statistics': stats_dictionary,
             'barplot_fp': barplot_fp
-#             'donutplot_fp': donutplot_fp
-            
+
         }
 
         return render(request, 'queries/singlequery_analysis.html', context)
 
 
 def analyze_multiple(request, queries_id):
+    print('::::::analyzing for upload_queryfile_multiple:::::')
     queries_obj = Queries.objects.get(pk=queries_id)
     queries = queries_obj.query_set.all()
     files = [query.queryFile for query in queries]
     
     # Create the new library from skims
     media_dir = settings.MEDIA_ROOT
-    library_dir = os.path.join(media_dir, queries_id)
+
+    print(media_dir)
+    print(queries_id)
+
+    library_dir = os.path.join(media_dir, str(queries_id))
     os.mkdir(library_dir)
     print("Creating library: ", library_dir)
-    
+
+    # copy CONFIG into library_dir
+    CONFIG_PATH = os.path.join(settings.MEDIA_ROOT, 'queryFiles')
+    CONFIG_PATH = os.path.join(CONFIG_PATH, 'CONFIG')
+    print('\n' * 3)
+    print(CONFIG_PATH)
+    copyfile(CONFIG_PATH, os.path.join(library_dir, 'CONFIG'))
+
+    print(os.path.exists(os.path.join(library_dir, 'CONFIG')))
+
+    print('\n'* 3)
+
+
     for file in files:
         filepath = file.path
-        # Unzip this file into a folder, and add folder to a reference 
+        # Unzip this file into a folder, and add folder to a reference
         # library
-        print(filepath)
+        print("FILE PATH : ", filepath)
         with zipfile.ZipFile(filepath,"r") as zip_ref:
             zip_ref.extractall(library_dir)
     
     # Generate the distance matrix from library
     dm_path = generate_distances(library_dir)
-    
+    queries_id = str(queries_id)
     output_fig = os.path.join(media_dir, queries_id+"_distance_heatmap")
     # Keep names_to_include as None to display all species
     distmat_dataframe = plot_distance_heatmap(dm_path, output_fig,
@@ -160,6 +174,8 @@ def analyze_multiple(request, queries_id):
         'distance_heatmap': output_fig,
         'distmat_dataframe': distmat_dataframe
     }
+    print('::::::RENDERING  for analyze_multiple:::::')
+
     return render(request, 'queries/multiplequery_analysis.html', context)
 
 

@@ -25,7 +25,6 @@ def get_common_names(file_name):
             handle.close()
             handle = Entrez.efetch(db='taxonomy', id=taxID, rettype="gb")
             record = Entrez.read(handle)
-            # print((record[0]).get('OtherNames'))
             if record[0]:
                 if record[0].get('OtherNames'):
                     if record[0].get('OtherNames').get('GenbankCommonName'):
@@ -79,4 +78,4 @@ def get_common_names(file_name):
             species = (sci_name.split(" "))[0]
             sci_to_common_dict[sci_name] = species_dict[species]
 
-    print(sci_to_common_dict)
+    return sci_to_common_dict

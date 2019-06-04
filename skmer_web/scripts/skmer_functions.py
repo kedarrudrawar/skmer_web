@@ -48,7 +48,7 @@ def parse_distout(dist_file, n_results=5, clean=False):
             print(line)
             line = line.strip()
             splits = line.split()
-            distances.append((sci_to_common_dict[splits[0].replace("_", " ")]+": "+splits[0].replace("_", " "), splits[1]))
+            distances.append((sci_to_common_dict[splits[0].replace("_", " ")], splits[0].replace("_", " "), splits[1]))
             
     if clean and os.path.exists(dist_file):
         os.remove(dist_file)
