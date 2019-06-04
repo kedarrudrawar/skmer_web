@@ -10,24 +10,24 @@
         <table class="table">
             <thead>
             <tr>
-                <th>Filename</th>
+                <th>File/Collection Name</th>
                 <th>File</th>
                 <th>Download link</th>
+                <th>Analysis</th>
             </tr>
             </thead>
             <tbody>
                 {% for query in queries %}
                 <tr>
-                    <td> {{ query.fileName }}</td>
-                    <td> {{ query.queryFile }}</td>
+                    {% if query.fileName %}
+                        <td> File - {{ query.fileName }}</td>
+                    {% else %}
+                        <td> Collection - {{ query.query_collection.collection_name }}        
+                    {% endif %}
+                    <td> {{ query.queryFile.name }}</td>
 
                     <td>
                         
-                        <!-- <div class="downloadButton"> 
-                            <a href="{{ query.queryFile.url }}"></a> 
-                            <button>Download File</button> 
-                        </div>  -->
-
                         <a href="{{ query.queryFile.url }}"><button>Download File</button></a>
                     
 

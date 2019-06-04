@@ -154,13 +154,14 @@ def analyze_multiple(request, queries_id):
     queries_id = str(queries_id)
     dm_img_output_path = os.path.join(media_dir, queries_id+"_distance_heatmap")
     # Keep names_to_include as None to display all species
-    distmat_dataframe = plot_distance_heatmap(dm_path, dm_img_output_path,
+    list_of_names = plot_distance_heatmap(dm_path, dm_img_output_path,
                                               names_to_include=None)
     dm_img_output_path = os.path.basename(dm_img_output_path)
 
     context = {
         'files': files,
-        'distance_heatmap': dm_img_output_path
+        'distance_heatmap': dm_img_output_path,
+        'sci_and_common_names': list_of_names
     }
 
     return render(request, 'queries/multiplequery_analysis.html', context)
@@ -170,9 +171,15 @@ def analyze_multiple(request, queries_id):
 
 def query_list(request):
     queries = Query.objects.all()
+    for query in queries:
+        print(str(query.queryFile))
+        print(str(query.queryFile).split('/')[-1])
+    file_names = [str(query.queryFile).split('/')[-1] for query in queries]
+    print(file_names)
     context = {
         'queries': queries,
-        'empty': len(queries) == 0
+        'empty': len(queries) == 0,
+        'file_names': file_names
     }
 
     return render(request, 'queries/query_list.html', context)

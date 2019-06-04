@@ -1,14 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2> This is the multiple query analysis file. </h2>
-    {% for file in files %}
-        {{ file.path }}<br>
-        {{ file.name }}<br>
-    {% endfor %}
+
+	<h3 class="Analysis">References</h3>
+	<br>
+    <table>
+    	<tr>
+    		<th>Common Name</th>
+    		<th>Scientific Name</th>
+    	</tr>
+ 
+    	{% for pair in sci_and_common_names %}
+    	<tr>
+    		<td>{{ pair.0 }}</td>
+	        <td>{{ pair.1 }}</td>
+	    </tr>
+	    {% endfor %}
+
+	</table>
+   
     <br>
-    {{ distance_heatmap }}
-    <br>
+
 
     <img src="../../../media/{{ distance_heatmap }}.png" style="width:400px;height:300px">
 {% endblock %}
