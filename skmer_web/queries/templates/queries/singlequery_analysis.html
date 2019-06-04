@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3 class="Analysis">Analysis for input query</h3>
+<h1 class="Analysis">Analysis for input query</h1>
 
-<h4>Filename: {{ query.fileName }}</h4>
-<!-- {{ query.queryFile.name }}<br> -->
-    <!-- {% for pair in output %}<br>
-        {{ pair.0 }} - {{ pair.1 }}
-    {% endfor %} -->
+
+<h3>Filename: {{ query.fileName }}</h3>
+<h4> Genome length: {{ statistics.genome_length }}</h4><br>
 
     <table>
     	<tr>
@@ -15,7 +13,7 @@
     		<th>Scientific Name</th>
     		<th>Common Name</th>
     		<th>Distance</th>
-    	</tr>
+		</tr>
  
     	{% for pair in output %}
     	<tr>

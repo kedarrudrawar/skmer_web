@@ -79,7 +79,7 @@ def analyze_file(request, query_id):
 
     else:
         ########Define input/output paths
-        library_dir = os.path.join(STATIC_DIR, 'insect_test_lib') ## Change this for final runs
+        library_dir = os.path.join(STATIC_DIR, 'large_test_lib') ## Change this for final runs
         output_prefix = os.path.join(settings.BASE_DIR, 'media/skmer_output/output')
         
         # Generate query results
