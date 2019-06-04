@@ -190,7 +190,7 @@ def plot_distance_heatmap(dm_path, output_fig, names_to_include=None):
         for line in dm:
             line = line.strip().split()
             if get_index:
-                names = [sci_to_common_dict[n.replace("_", " ")] for n in line[1:]]
+                names = line[1:] #[sci_to_common_dict[n.replace("_", " ")] for n in line[1:]]
                 dm_df = pd.DataFrame(columns=names, index=names)
                 get_index = False
             else:
@@ -205,6 +205,8 @@ def plot_distance_heatmap(dm_path, output_fig, names_to_include=None):
     linkage = hc.linkage(sp.distance.squareform(dm_df), method='average')
     sns.clustermap(dm_df, row_linkage=linkage, col_linkage=linkage)
     plt.savefig(output_fig)
+
+    
     return dm_df
 
 def get_sci_common_dict():
