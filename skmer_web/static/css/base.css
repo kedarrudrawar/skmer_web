@@ -97,8 +97,9 @@ td, th{
     color:#000;
     text-align: center;
     padding: 10px 18px;
-    font-size: 18px;
+    font-size: 20px;
     text-decoration: none;
+    font-family: Copperplate;
 }
 
 .navigation a:hover {
