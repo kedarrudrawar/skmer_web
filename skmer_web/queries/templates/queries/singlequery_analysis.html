@@ -1,15 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-Analysis for input query: <br>
+<h3 class="Analysis">Analysis for input query</h3>
 
-filename: {{ query.fileName }}<br>
-{{ query.queryFile.name }}<br>
-    {% for pair in output %}<br>
+<h4>Filename: {{ query.fileName }}</h4>
+<!-- {{ query.queryFile.name }}<br> -->
+    <!-- {% for pair in output %}<br>
         {{ pair.0 }} - {{ pair.1 }}
-    {% endfor %}
+    {% endfor %} -->
 
+    <table>
+    	<tr>
+    		<th>Reference File</th>
+    		<th>Closest Reference Distance</th>
+    	</tr>
+ 
+    	{% for pair in output %}
+    	<tr>
+	        <td>{{ pair.0 }}</td>
+	        <td>{{ pair.1 }}</td>
+	    </tr>
+	    {% endfor %}
 
-<br>
-<img src="../../media/{{ barplot_fp }}.png">
+	</table>
+
 {% endblock %}

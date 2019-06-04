@@ -18,13 +18,23 @@
             <tbody>
                 {% for query in queries %}
                 <tr>
-                    <td> {{ query.fileName }}{{ query.id }}</td>
+                    <td> {{ query.fileName }}</td>
                     <td> {{ query.queryFile }}</td>
 
                     <td>
-                        <a href="{{ query.queryFile.url }}" target="_blank">
-                            Download File
-                        </a>
+                        
+                        <!-- <div class="downloadButton"> 
+                            <a href="{{ query.queryFile.url }}"></a> 
+                            <button>Download File</button> 
+                        </div>  -->
+
+                        <a href="{{ query.queryFile.url }}"><button>Download File</button></a>
+                    
+
+                        
+                        <!-- <a href="{{ query.queryFile.url }}" target="_blank"> -->
+                            <!-- Download File</a> -->
+                       
                     </td>
                     <td>
                         <a href="{% url 'queries:analyze' query_id=query.id %}" target="_blank">

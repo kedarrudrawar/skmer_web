@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import mark_safe
 
 
 # Create your models here.
