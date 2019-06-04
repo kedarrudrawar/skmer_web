@@ -4,9 +4,12 @@
 Analysis for input query: <br>
 
 filename: {{ query.fileName }}<br>
-{{ query.id }}<br>
 {{ query.queryFile.name }}<br>
     {% for pair in output %}<br>
         {{ pair.0 }} - {{ pair.1 }}
     {% endfor %}
+
+
+<br>
+<img src="../../media/{{ barplot_fp }}.png">
 {% endblock %}

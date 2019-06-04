@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, reverse
 from django.conf import settings
 from urllib.parse import urlencode
+from django.http import HttpResponse
+from django.template import loader
 
 import os
 
@@ -85,30 +87,41 @@ def analyze_file(request, query_id):
         # Parse the query results into python objects
         # Set clean=True to remove intermediate files
         # Specify number of results to display (n_results=1 gives top hit only)
-        list_of_hit_distance_pairs = parse_distout(dist_file, n_results=5,
-                                                   clean=True)
+        list_of_hit_distance_pairs = parse_distout(dist_file, n_results=5, clean=False)
         print(list_of_hit_distance_pairs)
+        
+        print("Stats folder is : ", stats_folder)
         
         # Parse the statistics folder
         # Can specify # decimal places to display, and whether to clean files
-        stats_dictionary = parse_statsout(stats_folder, n_decimals=5, 
-                                          clean=True)
+        stats_dictionary = parse_statsout(stats_folder, n_decimals=5, clean=False)
         
+        print(stats_dictionary)
         ######## Define filepath to where images are saved
         media_dir = settings.MEDIA_ROOT
         
+        folder = os.path.join(media_dir, stats_folder)
+        
+        print(media_dir)
         # Generate figures for this query
         barplot_fp = plot_repeat_profile_bar(stats_dictionary, 
-                                             media_dir+stats_folder, 
+                                             folder, 
                                              logscale=False)
-        donutplot_fp = plot_repeat_profile_donut(stats_dictionary, media_dir+stats_folder)
+        barplot_fp = os.path.basename(barplot_fp)
+#         svg = plot_repeat_profile_bar(stats_dictionary, 
+#                                              media_dir+stats_folder, 
+#                                              logscale=False)
+#         donutplot_fp = plot_repeat_profile_donut(stats_dictionary, media_dir+stats_folder)
+#         donutplot_fp = os.path.basename(donutplot_fp)
+        
+        
         
         context = {
             'query': query_obj,
             'output': list_of_hit_distance_pairs,
             'statistics': stats_dictionary,
-            'barplot_fp': barplot_fp,
-            'donutplot_fp': donutplot_fp,
+            'barplot_fp': barplot_fp
+#             'donutplot_fp': donutplot_fp
             
         }
 
