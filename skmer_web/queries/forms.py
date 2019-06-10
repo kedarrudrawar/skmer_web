@@ -10,7 +10,7 @@ class QueryForm(forms.ModelForm):
             'queryFile',
         ]
         widgets = {
-        	'fileName': forms.TextInput(attrs={'class': 'box'}),
+            'fileName': forms.TextInput(attrs={'class': 'box'}),
 
         }
 
@@ -29,4 +29,3 @@ class QueryCollectionForm(forms.ModelForm):
         model = Queries
         fields = ['collection_name']
 
-# class DoubleWidget(forms.MultiWidget):

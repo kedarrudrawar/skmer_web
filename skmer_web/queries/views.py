@@ -64,7 +64,6 @@ def upload_queryfile_multiple(request):
         'name_form': name_form,
         'query_form': query_form
     }
-    print('::::::RENDERING for upload_queryfile_multiple:::::')
     return render(request, 'queries/query_multiple_create.html', context)
 
 
@@ -89,21 +88,16 @@ def analyze_file(request, query_id):
         # Set clean=True to remove intermediate files
         # Specify number of results to display (n_results=1 gives top hit only)
         list_of_hit_distance_pairs = parse_distout(dist_file, n_results=5, clean=True)
-        print(list_of_hit_distance_pairs)
-        
-        print("Stats folder is : ", stats_folder)
-        
+
         # Parse the statistics folder
         # Can specify # decimal places to display, and whether to clean files
         stats_dictionary = parse_statsout(stats_folder, n_decimals=5, clean=True)
         
-        print(stats_dictionary)
         ######## Define filepath to where images are saved
         media_dir = settings.MEDIA_ROOT
         
         folder = os.path.join(media_dir, stats_folder)
         
-        print(media_dir)
         # Generate figures for this query
         barplot_fp = plot_repeat_profile_bar(stats_dictionary, 
                                              folder, 
